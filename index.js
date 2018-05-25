@@ -1,13 +1,13 @@
-const express = require('express')
-const jwt = require('jsonwebtoken')
-const exjwt = require('express-jwt')
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const exjwt = require('express-jwt');
 const bodyParser = require('body-parser');
-const app = express()
-const dbconn = require('./db')
-const port = 5500
+const app = express();
+const dbconn = require('./db');
+const port = 5500;
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:xxxx'); // Frontend port number.
     res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
     next();
 });
@@ -16,20 +16,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const jwtMW = exjwt({
-    secret: 'TESTING_SERVER_SECRET'
+    secret: 'TESTING_SERVER_SECRET' // Secret key to encrypt.
 });
 
+// Endpoint and Method(Post) defined.
 app.post('/api/login', (req,res)=>{
     const { username, password } = req.body;
     dbconn.bucket.query(dbconn.N1qlQuery.fromString('SELECT `username`, `password`, META(TODO).id FROM `TODO` WHERE `username`="'+username+'" AND `type`="user"'),
         (err, rows)=>{
-            var dbUname = rows[0].username
-            var dbPassword = rows[0].password
-            var dbID = rows[0].id
+            var dbUname = rows[0].username;
+            var dbPassword = rows[0].password;
+            var dbID = rows[0].id;
             if (password == dbPassword && username == dbUname) {
                 let token = jwt.sign({ id: dbID, un: dbUname }, 'TESTING_SERVER_SECRET', { expiresIn: 129600 })
                 res.json({
-                    success: true,
+                    success: true,3000
                     err: null,
                     token
                 });
@@ -44,6 +45,7 @@ app.post('/api/login', (req,res)=>{
     )
 })
 
+// Endpoint and Method defined.
 app.post('/api/profile/i',(req,res)=>{
     const { id, token, title, date, note } = req.body
     jwt.verify(token,'TESTING_SERVER_SECRET',(err, decodedToken)=>{
@@ -57,6 +59,7 @@ app.post('/api/profile/i',(req,res)=>{
     })
 })
 
+// Endpoint and Method defined.
 app.post('/api/profile/r',(req, res)=>{
     const {token} = req.body
     jwt.verify(token,'TESTING_SERVER_SECRET', (err,decToken)=>{
