@@ -4,20 +4,11 @@
  * @author Ahmed Akmal
  * @version 1.0.0
  * 
- * ##################
- * ## Sample Query ##
- * ##################
- * bucket.query(N1qlQuery.fromString('SELECT * FROM `TODO` WHERE `username`="akmal525"'),
- *  (err, rows)=>{
- *      console.log("Got rows: %j", rows);
- *  }
- * )
- * 
  */
-var couchbase = require('couchbase')
+var couchbase = require('couchbase');
 var N1qlQuery = couchbase.N1qlQuery;
-var cluster = new couchbase.Cluster('couchbase://172.17.0.2')
-cluster.authenticate('<your_username>', '<your_password>') // Authentication to Docker CouchBase image container.
-var bucket = cluster.openBucket('TODO')
+var cluster = new couchbase.Cluster('couchbase://x.x.x.x'); // prepend it with the docker image name.
+cluster.authenticate('<your_username>', '<your_password>'); // Authentication to Docker CouchBase image container.
+var bucket = cluster.openBucket('<your_bucket_name>'); // Couchbase bucket name.
 
-module.exports = {bucket,N1qlQuery}
+module.exports = { bucket, N1qlQuery }; // Exporting the bucket and N1q1Query
